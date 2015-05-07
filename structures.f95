@@ -14,8 +14,11 @@ module structures
     integer :: M ! lattice points in x-dir
     integer :: N  ! number of time steps/iterations
     integer :: V_type
-    integer :: plot_interval
-
-    logical :: plot_re
+  end type
+  
+  type plt_par
+    integer  :: plot_interval ! number of iterations between plots
+    real(dp) :: rng(2) ! min and max y values for plot
+    logical  :: plot_re
   end type
 end module

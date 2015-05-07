@@ -6,10 +6,12 @@ module plotroutines
   public :: plot_wavef, close_plot, animate_plot
 
 contains
-  subroutine animate_plot(Q)
+  subroutine animate_plot(Q, P)
+    type(plt_par), intent(in)  :: P
     type(modl_par), intent(in) :: Q
-    integer :: ret
-    
+
+    integer  :: ret
+
     ! creates fifo pipe: plotfifo.dat
     call system("rm -f plotfifo.dat; mkfifo plotfifo.dat", ret)
     
@@ -22,20 +24,20 @@ contains
       write(10,*) 'set grid'
       write(10,*) 'set xlabel "x"'
       write(10,*) 'set xrange [0:',Q%L,']'
-      if (Q%plot_re) then 
-        write(10,*) 'set yrange [-1.1:1.1]'
+      if (P%plot_re) then 
+        write(10,*) 'set yrange [',P%rng(1),':',P%rng(2),']'
       else
-        write(10,*) 'set yrange[0:1.1]'
+        write(10,*) 'set yrange [0:',P%rng(2),']'
       endif
       write(10,*) 'load "loop.plt"'
     close(10)
     
     ! create plot/animate instruction
     open(10,access = 'sequential', file = 'loop.plt')
-      if (Q%plot_re) then
-        write(10,*) 'plot "< cat plotfifo.dat" using 1:2 with lines ls 1 title "Re(Psi)",\'
+      if (P%plot_re) then
+        write(10,*) 'plot "< cat plotfifo.dat" u 1:2 w l ls 2 t "Re(Psi)",\'
       else
-        write(10,*) 'plot "< cat plotfifo.dat" using 1:3 with lines ls 1 title "P",\'
+        write(10,*) 'plot "< cat plotfifo.dat" u 1:3 w l ls 1 t "P",\'
       endif
       write(10,*) '"" using 1:4 with lines ls 3 title "V"'
       write(10,*) 'pause 0.1'

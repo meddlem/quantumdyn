@@ -7,17 +7,18 @@ module simulation
   public :: time_evo
 
 contains
-  subroutine time_evo(psi, x, A, Q)
+  subroutine time_evo(psi, x, A, Q, P)
     complex(dp), intent(inout) :: psi(:)
     complex(dp), intent(in)    :: A(:,:)
     real(dp), intent(in)       :: x(:) 
     type(modl_par), intent(in) :: Q
+    type(plt_par), intent(in)  :: P
 
     real(dp), allocatable :: V(:), V1(:), V2(:)
     integer  :: i
 
     allocate(V(Q%M), V1(Q%M), V2(Q%M))
-    call animate_plot(Q)
+    call animate_plot(Q, P)
     
     do i = 1,Q%N
       ! calculate potential using trapezoidal rule
@@ -28,7 +29,7 @@ contains
       ! time integration 
       call solve_nxt(psi, V, A, Q)
 
-      if (mod(i,Q%plot_interval) == 0) then
+      if (mod(i,P%plot_interval) == 0) then
         call plot_wavef(psi, x, V, Q)
       endif
     enddo
@@ -78,9 +79,13 @@ contains
         V = 0._dp
       endif
     elseif (Q%V_type == 2) then
-      ! fixed height tunnel barrier
+      ! fixed height barrier
       V = 0._dp
-      where(abs(x-Q%L/2) < Q%L/20) V = 1._dp
+      where(abs(x-Q%L/2) < Q%L/40) V = 2._dp
+    elseif (Q%V_type == 3) then
+      ! harmonic potential 
+      V = 0._dp
+      V = (x-Q%L/2)**2 
     endif
   end subroutine
 end module

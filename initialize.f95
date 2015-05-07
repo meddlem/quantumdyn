@@ -6,8 +6,9 @@ module initialize
   public :: init_param, init_wavef, init_ops
 
 contains
-  subroutine init_param(Q)
+  subroutine init_param(Q, P)
     type(modl_par), intent(inout) :: Q
+    type(plt_par), intent(inout)  :: P
 
     ! set model parameters
     Q%dx = 0.01_dp
@@ -16,13 +17,24 @@ contains
     if (Q%V_type == 1) then
       Q%L = 12._dp
       Q%M = floor(Q%L/Q%dx)
-      Q%plot_interval = 9
       Q%n = 20000
+
+      P%plot_interval = 9
+      P%rng = [-2._dp, 2._dp]
     elseif (Q%V_type == 2) then
-      Q%L = 50._dp
+      Q%L = 100._dp
       Q%M = floor(Q%L/Q%dx)
-      Q%plot_interval = 9
       Q%n = 5000
+
+      P%plot_interval = 9
+      P%rng = [-2._dp, 2._dp]
+    elseif (Q%V_type == 3) then
+      Q%L = 12._dp
+      Q%M = floor(Q%L/Q%dx)
+      Q%n = 20000
+
+      P%plot_interval = 1
+      P%rng = [-1._dp, 1._dp]
     endif
     
     Q%tau = 400._dp
@@ -44,12 +56,19 @@ contains
     enddo
 
     if (Q%V_type == 1) then
+      ! 1st excited state of harmonic potential
       r = abs(x - Q%L/2)
       Hx = (x - Q%L/2)
       A = 1._dp
     elseif (Q%V_type == 2) then
+      ! gaussian wavepacket
       r = abs(x - Q%L/4)
       Hx = 1._dp
+      A = 1._dp
+    elseif (Q%V_type == 3) then
+      ! 2nd excited state of harmonic potential
+      r = abs(x - Q%L/2)
+      Hx = 4*(x - Q%L/2)**2 - 2
       A = 1._dp
     endif
 
