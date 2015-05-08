@@ -16,10 +16,13 @@ contains
     real(dp), intent(out)      :: T
 
     real(dp), allocatable :: V(:), V1(:), V2(:)
-    integer  :: i
+    real(dp)              :: vx
+    integer               :: i
 
     allocate(V(Q%M), V1(Q%M), V2(Q%M))
     call animate_plot(Q, P)
+    ! average velocity of the wavepacket
+    vx = 2*Q%k
     
     do i = 1,Q%N
       ! calculate potential using trapezoidal rule
@@ -31,11 +34,10 @@ contains
       call solve_nxt(psi, V, A, Q)
 
       if (Q%sim_type == 'tun') then
-        if (i*Q%dt > (Q%L/4 + 2.35482_dp)/Q%k) then
+        if (abs(vx*i*Q%dt) > Q%L/2) then
           ! calc transmission coeff
           where (x < Q%L/2) psi = zero
           T = sum(abs(psi)**2*Q%dx)
-
           ! stop iteration after wavepacket goes through
           exit
         endif

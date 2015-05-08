@@ -29,8 +29,8 @@ program main
 
       ! time integration
       call time_evo(psi, x, A, Q, P, T)
-      call output(Q, T)
 
+      call output(Q, T)
       deallocate(psi, x, A)
     end subroutine
 end program
