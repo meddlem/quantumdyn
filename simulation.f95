@@ -15,6 +15,8 @@ contains
     type(plt_par), intent(in)  :: P
 
     real(dp), allocatable :: V(:), V1(:), V2(:)
+    real(dp) :: T
+    logical  :: exs
     integer  :: i
 
     allocate(V(Q%M), V1(Q%M), V2(Q%M))
@@ -30,11 +32,26 @@ contains
       call solve_nxt(psi, V, A, Q)
 
       if (Q%sim_type == 'tun') then
-        ! stop iteration after wavepacket goes through
-        if (i*Q%dt > (Q%L/5 + 4.291_dp)/Q%k) then
+        if (i*Q%dt > (Q%L/4 + 2.35482_dp)/Q%k) then
+          
+          ! calc transmission coeff
+          where (x < Q%L/2*(1._dp+1._dp/80)) psi = zero
+          T = sum(abs(psi)**2*Q%dx)
+
+          ! write to file 
+          inquire(file='ET.dat',exist=exs)
+          if (exs) then
+            open(12,file ='ET.dat',status='old',position='append',&
+              action='write')
+          else 
+            open(12,file ='ET.dat',status='new',action='write')
+          endif
+            write(12,'(F9.5,1X,F9.5)') Q%k**2, T
+          close(12)  
+
+          ! stop iteration after wavepacket goes through
           exit
         endif
-        ! calc transmission ?
       endif
 
       if (mod(i,P%plot_interval) == 0) then
@@ -48,8 +65,8 @@ contains
 
   subroutine solve_nxt(psi, V, A, Q)
     complex(dp), intent(inout) :: psi(:)
-    real(dp), intent(inout)    :: V(:)
     complex(dp), intent(in)    :: A(:,:)
+    real(dp), intent(in)       :: V(:)
     type(modl_par), intent(in) :: Q
 
     complex(dp), allocatable :: g(:), A_tmp(:,:)
@@ -96,7 +113,7 @@ contains
     elseif (Q%sim_type == 'tun') then
       ! fixed height barrier
       V = 0._dp
-      where(abs(x-Q%L/2) < Q%L/40) V = 2._dp
+      where(abs(x-Q%L/2) < Q%L/80) V = 4._dp
     elseif (Q%sim_type == 'har') then
       ! harmonic potential 
       V = 0._dp

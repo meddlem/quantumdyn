@@ -11,7 +11,7 @@ contains
     type(plt_par), intent(inout)  :: P
 
     ! set model parameters
-    Q%dx = 0.01_dp
+    Q%dx = 0.025_dp
     Q%dt = 0.025_dp
     
     if (Q%sim_type == 'hsq') then
@@ -53,7 +53,7 @@ contains
     type(modl_par), intent(in) :: Q 
 
     real(dp), allocatable    :: r(:), Hx(:)
-    real(dp)                 :: A
+    real(dp)                 :: sigma
     integer                  :: i
     
     allocate(r(Q%M), Hx(Q%M))
@@ -66,20 +66,20 @@ contains
       ! 1st excited state of harmonic potential
       r = abs(x - Q%L/2)
       Hx = (x - Q%L/2)
-      A = 1._dp
+      sigma = 1._dp
     elseif (Q%sim_type == 'tun') then
       ! gaussian wavepacket
       r = abs(x - Q%L/4)
       Hx = 1._dp
-      A = 1._dp
+      sigma = Q%L/20._dp
     elseif ((Q%sim_type == 'har') .or. (Q%sim_type == 'hqa')) then
       ! 2nd excited state of harmonic potential
       r = abs(x - Q%L/2)
       Hx = 4*(x - Q%L/2)**2 - 2
-      A = 1._dp
+      sigma = 1._dp
     endif
 
-    psi = Hx*exp(-0.5_dp*A*r**2)*exp(i_u*Q%k*x)
+    psi = Hx*exp(-0.5_dp*r**2/sigma**2)*exp(i_u*Q%k*x)
 
     ! normalize wavefunction
     psi = psi/sqrt(sum(abs(psi)**2*Q%dx))
