@@ -15,6 +15,7 @@ contains
     if (Q%sim_type == 'tun') then
       Q%L = 100._dp
     elseif (Q%sim_type == 'har') then
+      Q%dt = 0.01_dp
       P%plot_interval = 1
     endif
     
