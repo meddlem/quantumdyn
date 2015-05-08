@@ -96,7 +96,7 @@ contains
     elseif (Q%sim_type == 'hqa') then
       ! adiabatic change harmonic potential -> quartic potential
       if (t < Q%tau) then
-        V = (1._dp - t/Q%tau)*(x - Q%L/2)**2 + t/Q%tau*(x - Q%L/2)**4
+        V = (1._dp - t/Q%tau)**2*(x - Q%L/2)**2 + (t/Q%tau)**2*(x - Q%L/2)**4
       else
         V = (x - Q%L/2)**4
       endif

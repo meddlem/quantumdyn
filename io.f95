@@ -13,8 +13,6 @@ contains
       write(*,'(/,A,/)') '************ Input *************' 
       write(*,'(A)',advance='no') "k = " 
       read(*,*) Q%k
-    else
-      Q%k = 0._dp
     endif
 
     write(*,'(A)') "Running simulation..."
@@ -26,10 +24,6 @@ contains
 
     character(10) :: arg
     integer       :: i
-
-    ! default 
-    Q%sim_type = 'har' ! Harmonic potential
-    P%plot_re = .false. ! Plot density 
 
     ! check command line arguments
     do i=1,iargc()

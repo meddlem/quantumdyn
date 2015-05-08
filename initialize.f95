@@ -10,28 +10,15 @@ contains
     type(modl_par), intent(inout) :: Q
     type(plt_par), intent(inout)  :: P
 
-    ! set model parameters
-    Q%dx = 0.01_dp
-    Q%dt = 0.01_dp
-    Q%L = 12._dp
-    Q%M = floor(Q%L/Q%dx)
-    Q%n = 30000
+    ! override model parameters
 
-    P%plot_interval = 19
-    P%rng = [-1._dp, 1._dp]
-    
     if (Q%sim_type == 'tun') then
       Q%L = 100._dp
-      Q%M = floor(Q%L/Q%dx)
-
-      P%rng = [-1._dp, 1._dp]
     elseif (Q%sim_type == 'har') then
       P%plot_interval = 1
-
-      P%rng = [-1._dp, 1._dp]
     endif
     
-    Q%tau = 400._dp
+    Q%M = floor(Q%L/Q%dx)
   end subroutine
 
   subroutine init_wavef(psi, x, Q)
