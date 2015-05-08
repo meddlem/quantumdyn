@@ -11,9 +11,9 @@ module structures
     real(dp) :: dt
     real(dp) :: tau  ! time constant potential
 
-    integer :: M ! lattice points in x-dir
-    integer :: N  ! number of time steps/iterations
-    integer :: V_type
+    integer      :: M ! lattice points in x-dir
+    integer      :: N  ! number of time steps/iterations
+    character(3) :: sim_type 
   end type
   
   type plt_par

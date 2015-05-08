@@ -14,21 +14,28 @@ contains
     Q%dx = 0.01_dp
     Q%dt = 0.025_dp
     
-    if (Q%V_type == 1) then
+    if (Q%sim_type == 'hsq') then
       Q%L = 12._dp
       Q%M = floor(Q%L/Q%dx)
       Q%n = 20000
 
       P%plot_interval = 9
       P%rng = [-2._dp, 2._dp]
-    elseif (Q%V_type == 2) then
+    elseif (Q%sim_type == 'hqa') then
+      Q%L = 12._dp
+      Q%M = floor(Q%L/Q%dx)
+      Q%n = 20000
+
+      P%plot_interval = 9
+      P%rng = [-2._dp, 2._dp]
+    elseif (Q%sim_type == 'tun') then
       Q%L = 100._dp
       Q%M = floor(Q%L/Q%dx)
       Q%n = 5000
 
       P%plot_interval = 9
       P%rng = [-2._dp, 2._dp]
-    elseif (Q%V_type == 3) then
+    elseif (Q%sim_type == 'har') then
       Q%L = 12._dp
       Q%M = floor(Q%L/Q%dx)
       Q%n = 20000
@@ -55,17 +62,17 @@ contains
       x(i) = i*Q%dx
     enddo
 
-    if (Q%V_type == 1) then
+    if (Q%sim_type == 'hsq') then
       ! 1st excited state of harmonic potential
       r = abs(x - Q%L/2)
       Hx = (x - Q%L/2)
       A = 1._dp
-    elseif (Q%V_type == 2) then
+    elseif (Q%sim_type == 'tun') then
       ! gaussian wavepacket
       r = abs(x - Q%L/4)
       Hx = 1._dp
       A = 1._dp
-    elseif (Q%V_type == 3) then
+    elseif ((Q%sim_type == 'har') .or. (Q%sim_type == 'hqa')) then
       ! 2nd excited state of harmonic potential
       r = abs(x - Q%L/2)
       Hx = 4*(x - Q%L/2)**2 - 2

@@ -29,6 +29,14 @@ contains
       ! time integration 
       call solve_nxt(psi, V, A, Q)
 
+      if (Q%sim_type == 'tun') then
+        ! stop iteration after wavepacket goes through
+        if (i*Q%dt > (Q%L/5 + 4.291_dp)/Q%k) then
+          exit
+        endif
+        ! calc transmission ?
+      endif
+
       if (mod(i,P%plot_interval) == 0) then
         call plot_wavef(psi, x, V, Q)
       endif
@@ -71,18 +79,25 @@ contains
     real(dp), intent(in)       :: x(:), t
     type(modl_par), intent(in) :: Q
 
-    if (Q%V_type == 1) then
+    if (Q%sim_type == 'hsq') then
       ! adiabatic change harmonic potential -> ISQW
       if (t < Q%tau) then
         V = (1._dp - t/Q%tau)**2*(x-Q%L/2)**2 
       else
         V = 0._dp
       endif
-    elseif (Q%V_type == 2) then
+    elseif (Q%sim_type == 'hqa') then
+      ! adiabatic change harmonic potential -> quartic potential
+      if (t < Q%tau) then
+        V = (1._dp - t/Q%tau)*(x - Q%L/2)**2 + t/Q%tau*(x - Q%L/2)**4
+      else
+        V = (x - Q%L/2)**4
+      endif
+    elseif (Q%sim_type == 'tun') then
       ! fixed height barrier
       V = 0._dp
       where(abs(x-Q%L/2) < Q%L/40) V = 2._dp
-    elseif (Q%V_type == 3) then
+    elseif (Q%sim_type == 'har') then
       ! harmonic potential 
       V = 0._dp
       V = (x-Q%L/2)**2 
