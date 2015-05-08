@@ -21,13 +21,15 @@ program main
 
       complex(dp), allocatable :: psi(:), A(:,:)
       real(dp), allocatable    :: x(:) 
+      real(dp)                 :: T
       
       allocate(psi(Q%M), x(Q%M), A(3,Q%M))
       call init_wavef(psi, x, Q)
       call init_ops(A, Q)
 
       ! time integration
-      call time_evo(psi, x, A, Q, P)
+      call time_evo(psi, x, A, Q, P, T)
+      call output(Q, T)
 
       deallocate(psi, x, A)
     end subroutine

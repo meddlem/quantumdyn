@@ -7,16 +7,15 @@ module simulation
   public :: time_evo
 
 contains
-  subroutine time_evo(psi, x, A, Q, P)
+  subroutine time_evo(psi, x, A, Q, P, T)
     complex(dp), intent(inout) :: psi(:)
     complex(dp), intent(in)    :: A(:,:)
     real(dp), intent(in)       :: x(:) 
     type(modl_par), intent(in) :: Q
     type(plt_par), intent(in)  :: P
+    real(dp), intent(out)      :: T
 
     real(dp), allocatable :: V(:), V1(:), V2(:)
-    real(dp) :: T
-    logical  :: exs
     integer  :: i
 
     allocate(V(Q%M), V1(Q%M), V2(Q%M))
@@ -33,21 +32,9 @@ contains
 
       if (Q%sim_type == 'tun') then
         if (i*Q%dt > (Q%L/4 + 2.35482_dp)/Q%k) then
-          
           ! calc transmission coeff
           where (x < Q%L/2) psi = zero
           T = sum(abs(psi)**2*Q%dx)
-
-          ! write to file 
-          inquire(file='ET.dat',exist=exs)
-          if (exs) then
-            open(12,file ='ET.dat',status='old',position='append',&
-              action='write')
-          else 
-            open(12,file ='ET.dat',status='new',action='write')
-          endif
-            write(12,'(F9.5,1X,F9.5)') Q%k**2, T
-          close(12)  
 
           ! stop iteration after wavepacket goes through
           exit

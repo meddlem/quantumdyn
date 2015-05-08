@@ -3,7 +3,7 @@ module io
   use structures
   implicit none
   private
-  public :: user_in, get_usr_args
+  public :: user_in, get_usr_args, output
 contains
 
   subroutine user_in(Q)
@@ -50,5 +50,30 @@ contains
         P%plot_re = .true. ! plot real part
       endif
     enddo
+  end subroutine
+
+  subroutine output(Q, T)
+    type(modl_par), intent(in) :: Q
+    real(dp), intent(in)       :: T
+
+    logical       :: exs
+    character(40) :: output_fmt
+
+    output_fmt = '(A,F9.4)'
+    
+    if (Q%sim_type == 'tun') then
+      write(*,output_fmt) "T = ", T
+
+      ! write to file 
+      inquire(file='ET.dat',exist=exs)
+      if (exs) then
+        open(12,file ='ET.dat',status='old',position='append',&
+          action='write')
+      else 
+        open(12,file ='ET.dat',status='new',action='write')
+      endif
+        write(12,'(F9.5,1X,F9.5)') Q%k**2, T
+      close(12)  
+    endif
   end subroutine
 end module
