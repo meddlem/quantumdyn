@@ -11,36 +11,23 @@ contains
     type(plt_par), intent(inout)  :: P
 
     ! set model parameters
-    Q%dx = 0.025_dp
+    Q%dx = 0.01_dp
     Q%dt = 0.025_dp
+    Q%L = 12._dp
+    Q%M = floor(Q%L/Q%dx)
+    Q%n = 30000
+
+    P%plot_interval = 19
+    P%rng = [-1._dp, 1._dp]
     
-    if (Q%sim_type == 'hsq') then
-      Q%L = 12._dp
-      Q%M = floor(Q%L/Q%dx)
-      Q%n = 20000
-
-      P%plot_interval = 9
-      P%rng = [-2._dp, 2._dp]
-    elseif (Q%sim_type == 'hqa') then
-      Q%L = 12._dp
-      Q%M = floor(Q%L/Q%dx)
-      Q%n = 20000
-
-      P%plot_interval = 9
-      P%rng = [-2._dp, 2._dp]
-    elseif (Q%sim_type == 'tun') then
+    if (Q%sim_type == 'tun') then
       Q%L = 100._dp
       Q%M = floor(Q%L/Q%dx)
-      Q%n = 5000
 
-      P%plot_interval = 9
-      P%rng = [-2._dp, 2._dp]
+      P%rng = [-1._dp, 1._dp]
     elseif (Q%sim_type == 'har') then
-      Q%L = 12._dp
-      Q%M = floor(Q%L/Q%dx)
-      Q%n = 20000
-
       P%plot_interval = 1
+
       P%rng = [-1._dp, 1._dp]
     endif
     
@@ -62,21 +49,21 @@ contains
       x(i) = i*Q%dx
     enddo
 
+    sigma = 1._dp
+    r = abs(x - Q%L/2)
+    Hx = 1._dp
+    
     if (Q%sim_type == 'hsq') then
       ! 1st excited state of harmonic potential
-      r = abs(x - Q%L/2)
       Hx = (x - Q%L/2)
-      sigma = 1._dp
     elseif (Q%sim_type == 'tun') then
       ! gaussian wavepacket
       r = abs(x - Q%L/4)
       Hx = 1._dp
       sigma = Q%L/20._dp
-    elseif ((Q%sim_type == 'har') .or. (Q%sim_type == 'hqa')) then
+    elseif (any(Q%sim_type == ['har', 'hqa'])) then
       ! 2nd excited state of harmonic potential
-      r = abs(x - Q%L/2)
       Hx = 4*(x - Q%L/2)**2 - 2
-      sigma = 1._dp
     endif
 
     psi = Hx*exp(-0.5_dp*r**2/sigma**2)*exp(i_u*Q%k*x)

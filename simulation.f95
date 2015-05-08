@@ -35,7 +35,7 @@ contains
         if (i*Q%dt > (Q%L/4 + 2.35482_dp)/Q%k) then
           
           ! calc transmission coeff
-          where (x < Q%L/2*(1._dp+1._dp/80)) psi = zero
+          where (x < Q%L/2) psi = zero
           T = sum(abs(psi)**2*Q%dx)
 
           ! write to file 
@@ -103,6 +103,7 @@ contains
       else
         V = 0._dp
       endif
+    
     elseif (Q%sim_type == 'hqa') then
       ! adiabatic change harmonic potential -> quartic potential
       if (t < Q%tau) then
@@ -110,14 +111,25 @@ contains
       else
         V = (x - Q%L/2)**4
       endif
+    
     elseif (Q%sim_type == 'tun') then
       ! fixed height barrier
       V = 0._dp
-      where(abs(x-Q%L/2) < Q%L/80) V = 4._dp
+      where(abs(x-Q%L/2) < Q%L/100) V = 4._dp
+
     elseif (Q%sim_type == 'har') then
       ! harmonic potential 
       V = 0._dp
       V = (x-Q%L/2)**2 
+
+    elseif (Q%sim_type == 'exp') then
+      ! adiabatic: harmonic -> exponential potential
+      if (t < Q%tau) then
+        V = (1._dp - t/Q%tau)**2*(x - Q%L/2)**2 + &
+          (t/Q%tau)**2*(1._dp - exp(-abs(x - Q%L/2)))
+      else
+        V = 1._dp - exp(-abs(x - Q%L/2)) 
+      endif
     endif
   end subroutine
 end module

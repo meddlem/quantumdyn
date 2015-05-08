@@ -9,10 +9,12 @@ contains
   subroutine user_in(Q)
     type(modl_par), intent(inout) :: Q
   
-    if (Q%sim_type == 'tun') then
+    if (any(Q%sim_type == ['tun', 'har'])) then
       write(*,'(/,A,/)') '************ Input *************' 
       write(*,'(A)',advance='no') "k = " 
       read(*,*) Q%k
+    else
+      Q%k = 0._dp
     endif
 
     write(*,'(A)') "Running simulation..."
@@ -32,16 +34,19 @@ contains
     ! check command line arguments
     do i=1,iargc()
       call getarg(i,arg)
-      if (trim(arg) == '-hsq') then
+      if (trim(arg) == '--hsq') then
         Q%sim_type = 'hsq' ! adiabatic change Harmonic -> ISQW
       endif
-      if (trim(arg) == '-t') then
+      if (trim(arg) == '--tun') then
         Q%sim_type = 'tun' ! scattering potential
       endif
-      if (trim(arg) == '-hqa') then
+      if (trim(arg) == '--hqa') then
         Q%sim_type = 'hqa' ! adiabatic change Harmonic -> quartic potential
       endif
-      if ((trim(arg) == '--PlotRe') .or. (trim(arg) == '-r')) then
+      if (trim(arg) == '--exp') then
+        Q%sim_type = 'exp' ! adiabatic change Harmonic -> exponential pot
+      endif
+      if (trim(arg) == '-r') then
         P%plot_re = .true. ! plot real part
       endif
     enddo
