@@ -12,7 +12,7 @@ contains
 
     ! set model parameters
     Q%dx = 0.01_dp
-    Q%dt = 0.025_dp
+    Q%dt = 0.01_dp
     Q%L = 12._dp
     Q%M = floor(Q%L/Q%dx)
     Q%n = 30000
