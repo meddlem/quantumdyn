@@ -17,7 +17,6 @@ contains
     
     ! create a gnuplot command file
     open(10,access = 'sequential',file = 'matplot.plt')
-      !write(10,*) 'set term x11' 
       write(10,*) 'set style line 1 lt 1 lc rgb "blue" lw 2 pt 2 ps 0.6'
       write(10,*) 'set style line 2 lt 1 lc rgb "red" lw 2 pt 2 ps 0.6'
       write(10,*) 'set style line 3 lt 1 lc rgb "black" lw 1 pt 2 ps 0.6'
@@ -61,7 +60,7 @@ contains
     ! write plot data to pipe
     open(11,access = 'sequential',status = 'replace',file = 'plotfifo.dat')
       do i = 1,Q%M
-        write(11,rfmt) x(i), real(psi(i)), abs(psi(i))**2, V(i)
+        write(11,rfmt) x(i), real(psi(i)), abs(psi(i))**2, V(i)/20
       enddo
     close(11)
   end subroutine
