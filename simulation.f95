@@ -44,11 +44,13 @@ contains
       endif
 
       if (mod(i,P%plot_interval) == 0) then
-        call plot_wavef(psi, x, V, Q)
+        call plot_wavef(psi, x, V, Q, .true.)
       endif
     enddo
 
+    ! final plot
     call close_plot()
+    call p_plot(psi, x, V, Q, P)
     deallocate(V, V1, V2)
   end subroutine
 
