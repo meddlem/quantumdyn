@@ -20,15 +20,21 @@ contains
     integer               :: i
 
     allocate(V(Q%M), V1(Q%M), V2(Q%M))
-    call animate_plot(Q, P)
+    ! init potential
+    call potential(V, x, 0._dp, Q)
     ! average velocity of the wavepacket
     vx = 2*Q%k
+    ! initial plot
+    call p_plot(psi, x, V, Q, P, 1)
+    call animate_plot(Q, P)
     
     do i = 1,Q%N
       ! calculate potential using trapezoidal rule
-      call potential(V1, x, i*Q%dt, Q)
-      call potential(V2, x, (i+1)*Q%dt, Q)
-      V = 0.5_dp*(V1 + V2)
+      if (any(Q%sim_type == ['hqa', 'hsq', 'exp'])) then
+        call potential(V1, x, i*Q%dt, Q)
+        call potential(V2, x, (i+1)*Q%dt, Q)
+        V = 0.5_dp*(V1 + V2)
+      endif
 
       ! time integration 
       call solve_nxt(psi, V, A, Q)
@@ -36,8 +42,7 @@ contains
       if (Q%sim_type == 'tun') then
         if (abs(vx*i*Q%dt) > Q%L/2) then
           ! calc transmission coeff
-          where (x < Q%L/2) psi = zero
-          T = sum(abs(psi)**2*Q%dx)
+          T = sum(abs(psi(Q%M/2:Q%M))**2*Q%dx)
           ! stop iteration after wavepacket goes through
           exit
         endif
@@ -50,7 +55,7 @@ contains
 
     ! final plot
     call close_plot()
-    call p_plot(psi, x, V, Q, P)
+    call p_plot(psi, x, V, Q, P, 2)
     deallocate(V, V1, V2)
   end subroutine
 

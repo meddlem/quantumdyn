@@ -77,18 +77,22 @@ contains
     call system('rm -f plotfifo.dat')
   end subroutine
 
-  subroutine p_plot(psi, x, V, Q, P)
+  subroutine p_plot(psi, x, V, Q, P, pl_no)
     complex(dp), intent(in)    :: psi(:)
     real(dp) , intent(in)      :: V(:), x(:)
     type(plt_par), intent(in)  :: P
     type(modl_par), intent(in) :: Q
+    integer, intent(in)        :: pl_no
 
-    integer  :: ret
+    integer       :: ret
+    character(40) :: filename
+
+    write(filename,'(A,I0,A)') 'set output "plot',pl_no,'.png"'
 
     ! create a gnuplot command file
     open(10,access = 'sequential',file = 'wf.plt')
       write(10,*) 'set term pngcairo'
-      write(10,*) 'set output "plot.png"'
+      write(10,*) filename
       write(10,*) 'set style line 1 lt 1 lc rgb "blue" lw 2 pt 2 ps 0.6'
       write(10,*) 'set style line 2 lt 1 lc rgb "red" lw 2 pt 2 ps 0.6'
       write(10,*) 'set style line 3 lt 1 lc rgb "black" lw 1 pt 2 ps 0.6'
