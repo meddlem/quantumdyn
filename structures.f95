@@ -22,6 +22,10 @@ module structures
     real(dp) :: tau = 400._dp 
     ! number of lattice points 
     integer  :: M 
+    ! barrier height (tunneling experiment)
+    real(dp) :: V0 = 1._dp
+    ! barrier width (tunneling experiment)
+    real(dp) :: W = 1._dp
     ! defines potential, initial wavefunction
     character(3) :: sim_type = 'har'
   end type

@@ -10,10 +10,11 @@ contains
     type(modl_par), intent(inout) :: Q
     type(plt_par), intent(inout)  :: P
 
-    ! override model parameters
+    ! override default parameters defined in structures
 
     if (Q%sim_type == 'tun') then
       Q%L = 100._dp
+      Q%V0 = 4._dp
     elseif (Q%sim_type == 'har') then
       Q%dt = 0.01_dp
       P%plot_interval = 1

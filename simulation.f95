@@ -104,7 +104,7 @@ contains
     elseif (Q%sim_type == 'tun') then
       ! fixed height barrier
       V = 0._dp
-      where(abs(x-Q%L/2) < Q%L/100) V = 4._dp
+      where(abs(x-Q%L/2) < Q%W) V = Q%V0
 
     elseif (Q%sim_type == 'har') then
       ! harmonic potential 
