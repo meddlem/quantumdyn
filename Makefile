@@ -29,4 +29,4 @@ main: $(OBJS)
 .PHONY: clean
 clean:
 	$(RM) $(PROG) $(OBJS) *.mod
-	$(RM) *.png *.txt *.plt *.dat
+	$(RM) *.png *.txt *.plt *.dat *.eps

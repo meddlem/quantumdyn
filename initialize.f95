@@ -12,6 +12,8 @@ contains
 
     ! override default parameters defined in structures
 
+    !P%rng = [-0.25_dp, 0.3_dp]
+
     if (Q%sim_type == 'tun') then
       Q%L = 100._dp
       Q%V0 = 4._dp

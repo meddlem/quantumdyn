@@ -87,11 +87,12 @@ contains
     integer       :: ret
     character(40) :: filename
 
-    write(filename,'(A,I0,A)') 'set output "plot',pl_no,'.png"'
+    write(filename,'(A,I0,A)') 'set output "plot',pl_no,'.eps"'
 
     ! create a gnuplot command file
     open(10,access = 'sequential',file = 'wf.plt')
-      write(10,*) 'set term pngcairo'
+      write(10,*) 'set term epscairo size 12cm,9cm font "Verdana,15"'
+      !write(10,*) 'set term pngcairo'
       write(10,*) filename
       write(10,*) 'set style line 1 lt 1 lc rgb "blue" lw 2 pt 2 ps 0.6'
       write(10,*) 'set style line 2 lt 1 lc rgb "red" lw 2 pt 2 ps 0.6'
