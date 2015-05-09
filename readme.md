@@ -11,4 +11,4 @@ The result of the simulation is an animation time evolution of the density (defa
 4. Use --hqa flag for adiabatic potential variation: Harmonic potential to quartic potential
 5. Use --exp flag for adiabatic potential variation: Harmonic potential to exponential potential
 
-Example: $./main --tun
+Example: $./main --tun -r

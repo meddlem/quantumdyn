@@ -25,7 +25,7 @@ contains
     ! average velocity of the wavepacket
     vx = 2*Q%k
     ! initial plot
-    call p_plot(psi, x, V, Q, P, 1)
+    call snapshot(psi, x, V, Q, P, 1)
     call animate_plot(Q, P)
     
     do i = 1,Q%N
@@ -55,7 +55,7 @@ contains
 
     ! final plot
     call close_plot()
-    call p_plot(psi, x, V, Q, P, 2)
+    call snapshot(psi, x, V, Q, P, 2)
     deallocate(V, V1, V2)
   end subroutine
 

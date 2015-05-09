@@ -3,7 +3,7 @@ module plotroutines
   use structures
   implicit none
   private
-  public :: plot_wavef, close_plot, animate_plot, p_plot
+  public :: plot_wavef, close_plot, animate_plot, snapshot
 
 contains
   subroutine animate_plot(Q, P)
@@ -77,7 +77,7 @@ contains
     call system('rm -f plotfifo.dat')
   end subroutine
 
-  subroutine p_plot(psi, x, V, Q, P, pl_no)
+  subroutine snapshot(psi, x, V, Q, P, pl_no)
     complex(dp), intent(in)    :: psi(:)
     real(dp) , intent(in)      :: V(:), x(:)
     type(plt_par), intent(in)  :: P
